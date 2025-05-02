@@ -34,6 +34,37 @@ $submitButtonBorderRadius = "4px";
 $submitButtonFontSize = "16px";
 $submitButtonHoverBgColor = "#0056b3";
 
+// Database connection
+$conn = new mysqli('localhost', 'root', '', 'admission');
+
+// Check connection
+if ($conn->connect_error) {
+    die('Connection failed: ' . $conn->connect_error);
+}
+
+// Handle form submission
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Sanitize and retrieve form data
+    $fullName = $conn->real_escape_string($_POST['fullName']);
+    $birthdate = $conn->real_escape_string($_POST['birthdate']);
+    $address = $conn->real_escape_string($_POST['address']);
+    $contactNumber = $conn->real_escape_string($_POST['contactNumber']);
+    $email = $conn->real_escape_string($_POST['email']);
+    $course = $conn->real_escape_string($_POST['course']);
+
+    // Insert data into the database
+    $sql = "INSERT INTO applicants (full_name, birthdate, address, contact_number, email, course) 
+            VALUES ('$fullName', '$birthdate', '$address', '$contactNumber', '$email', '$course')";
+
+    if ($conn->query($sql) === TRUE) {
+        // Redirect to step1.php with a success flag
+        header('Location: step2.php?success=1');
+        exit(); // Ensure no further code is executed
+    } else {
+        echo '<script>alert("Error: ' . $conn->error . '");</script>';
+    }
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -120,10 +151,13 @@ $submitButtonHoverBgColor = "#0056b3";
     </style>
 </head>
 <body>
+    <div id="successMessage" style="display: none; position: fixed; top: 20px; right: 20px; background-color: #28a745; color: white; padding: 10px 20px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); z-index: 1000;">
+        You created it successfully!
+    </div>
     <div class="form-container" id="formContainer">
         <h1>Admission Requirements</h1>
         <p>Step 1: Fill out the required information below.</p>
-        <form id="step1Form">
+        <form id="step1Form" method="POST">
             <div class="form-group">
                 <label for="fullName">Full Name</label>
                 <input type="text" id="fullName" name="fullName" required>
@@ -146,24 +180,29 @@ $submitButtonHoverBgColor = "#0056b3";
             </div>
             <div class="form-group">
                 <label for="course">Course/Program Applying For</label>
-                <input type="text" id="course" name="course" required>
+                <select id="course" name="course" required>
+                    <option value="">Select a course</option>
+                    <option value="Computer Science">Computer Science</option>
+                    <option value="Information Technology">Information Technology</option>
+                    <option value="Engineering">Engineering</option>
+                    <option value="Business Administration">Business Administration</option>
+                    <option value="Nursing">Nursing</option>
+                </select>
             </div>
             <div class="form-group">
                 <label for="documents">Upload Documents</label>
                 <input type="file" id="documents" name="documents[]" multiple required>
                 <p class="file-label">Upload the following: Recent 1x1 / 2x2 ID photos, PSA Birth Certificate, Certificate of Good Moral Character, Academic records (Form 137/138 or TOR), Parent/Guardian’s ID.</p>
             </div>
-            <button type="button" class="next-button" id="nextButton">Next</button>
+            <button type="submit" class="next-button" id="nextButton">Next</button>
         </form>
     </div>
-
     <script>
         document.getElementById('nextButton').addEventListener('click', function () {
             const xhr = new XMLHttpRequest();
             xhr.open('GET', 'step2.php', true);
             xhr.onload = function () {
                 if (xhr.status === 200) {
-                    // Replace the content of the form container with step2.php content
                     document.getElementById('formContainer').innerHTML = xhr.responseText;
                 } else {
                     console.error('Failed to load step2.php');
@@ -171,6 +210,18 @@ $submitButtonHoverBgColor = "#0056b3";
             };
             xhr.send();
         });
+
+        // Check if the URL contains the success flag
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has('success')) {
+            const successMessage = document.getElementById('successMessage');
+            successMessage.style.display = 'block';
+
+            // Hide the message after 3 seconds
+            setTimeout(() => {
+                successMessage.style.display = 'none';
+            }, 3000);
+        }
     </script>
 </body>
 </html>

@@ -32,9 +32,26 @@ $buttonBorderRadius = "5px";
 $buttonFontSize = "14px";
 
 // Variables for content text
-$contentNoApplicationsText = "No Applications Yet";
 $contentStartJourneyText = "Start your journey by creating a new application today.";
 $buttonText = "Start New Application";
+
+// Database connection
+$conn = new mysqli('localhost', 'root', '', 'admission');
+
+// Check connection
+if ($conn->connect_error) {
+    die('Connection failed: ' . $conn->connect_error);
+}
+
+// Query to count the number of applicants
+$sql = "SELECT COUNT(*) AS total FROM applicants";
+$result = $conn->query($sql);
+
+// Fetch the count
+$totalApplicants = 0;
+if ($result && $row = $result->fetch_assoc()) {
+    $totalApplicants = $row['total'];
+}
 
 ?>
 
@@ -112,16 +129,22 @@ $buttonText = "Start New Application";
     <h1 class="headerSettings"><?php echo $headerText; ?></h1>
 
     <div class="content">
-        <p><?php echo $contentNoApplicationsText; ?></p>
+        <h2>Welcome to the Admission Portal</h2>
         <p><?php echo $contentStartJourneyText; ?></p>
-        <a href="#" class="button" id="loadStep1Button"><?php echo $buttonText; ?></a>
+        <p>Total Applications Created: <strong><?php echo $totalApplicants; ?></strong></p>
+        <a href="step1.php" class="button"><?php echo $buttonText; ?></a>
+        <a href="login_admision.php" class="button" style="background-color: #28a745; margin-left: 10px;">Already Created?</a>
     </div>
 
     <!-- Placeholder for step1.php content -->
     <div id="step1Content" style="margin-top: 20px;"></div>
 
     <script>
-        // Function to load step1.php dynamically
+        document.getElementById('loadStep1Button').addEventListener('click', function(event) {
+            event.preventDefault(); // Prevent default link behavior
+            loadStep1(); // Call the function to load step1.php
+        });
+
         function loadStep1() {
             const xhr = new XMLHttpRequest();
             xhr.open('GET', 'step1.php', true);
@@ -166,12 +189,6 @@ $buttonText = "Start New Application";
             };
             xhrStep2.send();
         }
-
-        // Initial event listener for the "Start New Application" button
-        document.getElementById('loadStep1Button').addEventListener('click', function(event) {
-            event.preventDefault(); // Prevent default link behavior
-            loadStep1(); // Call the function to load step1.php
-        });
     </script>
 
 </body>

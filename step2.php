@@ -159,19 +159,13 @@ $nextButtonText = "Next";
     <script>
         // Back button functionality
         document.getElementById('backButton').addEventListener('click', function () {
-            const xhr = new XMLHttpRequest();
-            xhr.open('GET', 'step1.php', true);
-            xhr.onload = function () {
-                if (xhr.status === 200) {
-                    document.querySelector('.form-container').innerHTML = xhr.responseText;
-                }
-            };
-            xhr.send();
+            window.location.href = 'step1.php';
         });
 
         // Next button functionality
         document.getElementById('nextButton').addEventListener('click', function () {
-            alert('Proceeding to the next step...');
+            // Redirect to step3.php
+            window.location.href = 'step3.php';
         });
     </script>
 </body>
