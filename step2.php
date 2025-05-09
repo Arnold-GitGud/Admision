@@ -35,8 +35,8 @@ $tableHeaderTime = "Time";
 $tableHeaderLocation = "Location";
 
 // Button texts
-$backButtonText = "Back";
-$nextButtonText = "Next";
+$homeButtonText = "Home";
+$nextButtonText = "Go to Enrollment Process";
 
 ?>
 
@@ -151,15 +151,15 @@ $nextButtonText = "Next";
             </tbody>
         </table>
         <div class="button-container">
-            <button class="button" id="backButton"><?php echo $backButtonText; ?></button>
+            <button class="button" id="homeButton"><?php echo $homeButtonText; ?></button>
             <button class="button" id="nextButton"><?php echo $nextButtonText; ?></button>
         </div>
     </div>
 
     <script>
-        // Back button functionality
-        document.getElementById('backButton').addEventListener('click', function () {
-            window.location.href = 'step1.php';
+        // Home button functionality
+        document.getElementById('homeButton').addEventListener('click', function () {
+            window.location.href = 'Admision.php';
         });
 
         // Next button functionality

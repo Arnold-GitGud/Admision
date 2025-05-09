@@ -66,6 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             border: 1px solid #dee2e6;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: relative; /* To position the back button inside */
         }
         .form-container h1 {
             text-align: center;
@@ -102,10 +103,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         .form-group button:hover {
             background-color: #0056b3;
         }
+        .back-button {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: #6c757d;
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .back-button:hover {
+            background-color: #5a6268;
+        }
     </style>
 </head>
 <body>
     <div class="form-container">
+        <!-- Back Button -->
+        <a href="step2.php" class="back-button">Back</a>
+
         <h1>Enrollment Process</h1>
         <form method="POST" enctype="multipart/form-data">
             <!-- 1. Personal Information -->

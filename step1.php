@@ -34,6 +34,13 @@ $submitButtonBorderRadius = "4px";
 $submitButtonFontSize = "16px";
 $submitButtonHoverBgColor = "#0056b3";
 
+$backButtonBgColor = "#6c757d";
+$backButtonTextColor = "#ffffff";
+$backButtonPadding = "10px";
+$backButtonBorderRadius = "4px";
+$backButtonFontSize = "16px";
+$backButtonHoverBgColor = "#5a6268";
+
 // Database connection
 $conn = new mysqli('localhost', 'root', '', 'admission');
 
@@ -52,16 +59,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = $conn->real_escape_string($_POST['email']);
     $course = $conn->real_escape_string($_POST['course']);
 
-    // Insert data into the database
-    $sql = "INSERT INTO applicants (full_name, birthdate, address, contact_number, email, course) 
-            VALUES ('$fullName', '$birthdate', '$address', '$contactNumber', '$email', '$course')";
+    // Check for duplicate email or contact number
+    $checkDuplicate = "SELECT * FROM applicants WHERE email = '$email' OR contact_number = '$contactNumber'";
+    $result = $conn->query($checkDuplicate);
 
-    if ($conn->query($sql) === TRUE) {
-        // Redirect to step1.php with a success flag
-        header('Location: step2.php?success=1');
-        exit(); // Ensure no further code is executed
+    if ($result->num_rows > 0) {
+        // Duplicate found
+        echo '<script>alert("Error: The email or contact number is already registered.");</script>';
     } else {
-        echo '<script>alert("Error: ' . $conn->error . '");</script>';
+        // Insert data into the database
+        $sql = "INSERT INTO applicants (full_name, birthdate, address, contact_number, email, course) 
+                VALUES ('$fullName', '$birthdate', '$address', '$contactNumber', '$email', '$course')";
+
+        if ($conn->query($sql) === TRUE) {
+            // Redirect to step2.php with a success flag
+            header('Location: step2.php?success=1');
+            exit(); // Ensure no further code is executed
+        } else {
+            echo '<script>alert("Error: ' . $conn->error . '");</script>';
+        }
     }
 }
 
@@ -133,16 +149,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             color: <?php echo $fileLabelColor; ?>;
         }
 
-        .next-button {
-            display: block;
-            width: 100%;
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .button {
+            width: 48%; /* Ensure both buttons have the same size */
             padding: <?php echo $submitButtonPadding; ?>;
+            font-size: <?php echo $submitButtonFontSize; ?>;
+            border-radius: <?php echo $submitButtonBorderRadius; ?>;
+            border: none;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .back-button {
+            background-color: <?php echo $backButtonBgColor; ?>;
+            color: <?php echo $backButtonTextColor; ?>;
+        }
+
+        .back-button:hover {
+            background-color: <?php echo $backButtonHoverBgColor; ?>;
+        }
+
+        .next-button {
             background-color: <?php echo $submitButtonBgColor; ?>;
             color: <?php echo $submitButtonTextColor; ?>;
-            border: none;
-            border-radius: <?php echo $submitButtonBorderRadius; ?>;
-            font-size: <?php echo $submitButtonFontSize; ?>;
-            cursor: pointer;
         }
 
         .next-button:hover {
@@ -151,13 +185,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </style>
 </head>
 <body>
-    <div id="successMessage" style="display: none; position: fixed; top: 20px; right: 20px; background-color: #28a745; color: white; padding: 10px 20px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); z-index: 1000;">
-        You created it successfully!
-    </div>
-    <div class="form-container" id="formContainer">
+    <div class="form-container">
         <h1>Admission Requirements</h1>
         <p>Step 1: Fill out the required information below.</p>
-        <form id="step1Form" method="POST">
+        <form method="POST">
             <div class="form-group">
                 <label for="fullName">Full Name</label>
                 <input type="text" id="fullName" name="fullName" required>
@@ -194,34 +225,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <input type="file" id="documents" name="documents[]" multiple required>
                 <p class="file-label">Upload the following: Recent 1x1 / 2x2 ID photos, PSA Birth Certificate, Certificate of Good Moral Character, Academic records (Form 137/138 or TOR), Parent/Guardian’s ID.</p>
             </div>
-            <button type="submit" class="next-button" id="nextButton">Next</button>
+            <div class="button-container">
+                <a href="Admision.php" class="button back-button">Back</a>
+                <button type="submit" class="button next-button">Next</button>
+            </div>
         </form>
     </div>
-    <script>
-        document.getElementById('nextButton').addEventListener('click', function () {
-            const xhr = new XMLHttpRequest();
-            xhr.open('GET', 'step2.php', true);
-            xhr.onload = function () {
-                if (xhr.status === 200) {
-                    document.getElementById('formContainer').innerHTML = xhr.responseText;
-                } else {
-                    console.error('Failed to load step2.php');
-                }
-            };
-            xhr.send();
-        });
-
-        // Check if the URL contains the success flag
-        const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.has('success')) {
-            const successMessage = document.getElementById('successMessage');
-            successMessage.style.display = 'block';
-
-            // Hide the message after 3 seconds
-            setTimeout(() => {
-                successMessage.style.display = 'none';
-            }, 3000);
-        }
-    </script>
 </body>
 </html>
