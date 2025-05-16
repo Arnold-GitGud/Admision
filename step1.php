@@ -75,79 +75,157 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <title>Step 1: Admission Requirements</title>
     <style>
         * {
-            box-sizing: border-box;
-        }
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+}
 
-        .form-container {
-            max-width: <?php echo $formContainerMaxWidth; ?>;
-            margin: 0 auto;
-            padding: <?php echo $formContainerPadding; ?>;
-            background-color: <?php echo $formContainerBgColor; ?>;
-            border: 1px solid <?php echo $formContainerBorderColor; ?>;
-            border-radius: <?php echo $formContainerBorderRadius; ?>;
-            box-shadow: <?php echo $formContainerBoxShadow; ?>;
-        }
+body {
+    background-color: #f9fafb;
+    color: #212529;
+    line-height: 1.5;
+    padding: 20px;
+}
 
-        .form-container h1 {
-            font-size: <?php echo $formTitleFontSize; ?>;
-            text-align: <?php echo $formTitleTextAlign; ?>;
-        }
+.form-container {
+    max-width: <?php echo $formContainerMaxWidth; ?>;
+    margin: 40px auto;
+    padding: <?php echo $formContainerPadding; ?>;
+    background-color: <?php echo $formContainerBgColor; ?>;
+    border: 1px solid <?php echo $formContainerBorderColor; ?>;
+    border-radius: <?php echo $formContainerBorderRadius; ?>;
+    box-shadow: <?php echo $formContainerBoxShadow; ?>;
+    transition: box-shadow 0.3s ease;
+}
 
-        .form-container p {
-            font-size: <?php echo $formSubtitleFontSize; ?>;
-            text-align: <?php echo $formSubtitleTextAlign; ?>;
-            color: <?php echo $formSubtitleColor; ?>;
-        }
+.form-container:hover {
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.12);
+}
 
-        .form-group {
-            margin-bottom: <?php echo $formGroupMarginBottom; ?>;
-        }
+.form-container h1 {
+    font-size: <?php echo $formTitleFontSize; ?>;
+    text-align: <?php echo $formTitleTextAlign; ?>;
+    margin-bottom: 0.3em;
+    color: #343a40;
+}
 
-        .form-group label {
-            font-weight: <?php echo $formLabelFontWeight; ?>;
-            margin-bottom: <?php echo $formLabelMarginBottom; ?>;
-            display: block;
-        }
+.form-container p {
+    font-size: <?php echo $formSubtitleFontSize; ?>;
+    text-align: <?php echo $formSubtitleTextAlign; ?>;
+    color: <?php echo $formSubtitleColor; ?>;
+    margin-bottom: 1.5em;
+}
 
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-            width: 100%;
-            padding: <?php echo $formInputPadding; ?>;
-            border: 1px solid <?php echo $formInputBorderColor; ?>;
-            border-radius: <?php echo $formInputBorderRadius; ?>;
-            font-size: <?php echo $formInputFontSize; ?>;
-            margin-bottom: <?php echo $formInputMarginBottom; ?>;
-        }
+.form-group {
+    margin-bottom: <?php echo $formGroupMarginBottom; ?>;
+}
 
-        .form-group input[type="file"] {
-            padding: 5px;
-        }
+.form-group label {
+    display: block;
+    font-weight: <?php echo $formLabelFontWeight; ?>;
+    margin-bottom: <?php echo $formLabelMarginBottom; ?>;
+    color: #495057;
+}
 
-        .form-group textarea {
-            resize: vertical;
-        }
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: <?php echo $formInputPadding; ?>;
+    border: 1px solid <?php echo $formInputBorderColor; ?>;
+    border-radius: <?php echo $formInputBorderRadius; ?>;
+    font-size: <?php echo $formInputFontSize; ?>;
+    margin-bottom: <?php echo $formInputMarginBottom; ?>;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
 
-        .form-group .file-label {
-            font-size: <?php echo $fileLabelFontSize; ?>;
-            color: <?php echo $fileLabelColor; ?>;
-        }
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    border-color: #80bdff;
+    outline: none;
+    box-shadow: 0 0 5px rgba(0,123,255,0.5);
+}
 
-        .next-button {
-            display: block;
-            width: 100%;
-            padding: <?php echo $submitButtonPadding; ?>;
-            background-color: <?php echo $submitButtonBgColor; ?>;
-            color: <?php echo $submitButtonTextColor; ?>;
-            border: none;
-            border-radius: <?php echo $submitButtonBorderRadius; ?>;
-            font-size: <?php echo $submitButtonFontSize; ?>;
-            cursor: pointer;
-        }
+.form-group input[type="file"] {
+    padding: 6px;
+}
 
-        .next-button:hover {
-            background-color: <?php echo $submitButtonHoverBgColor; ?>;
-        }
+.form-group textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+.form-group .file-label {
+    font-size: <?php echo $fileLabelFontSize; ?>;
+    color: <?php echo $fileLabelColor; ?>;
+    margin-top: -8px;
+    margin-bottom: 15px;
+    display: block;
+}
+
+.next-button {
+    display: block;
+    width: 100%;
+    padding: <?php echo $submitButtonPadding; ?> 0;
+    background-color: <?php echo $submitButtonBgColor; ?>;
+    color: <?php echo $submitButtonTextColor; ?>;
+    border: none;
+    border-radius: <?php echo $submitButtonBorderRadius; ?>;
+    font-size: <?php echo $submitButtonFontSize; ?>;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 123, 255, 0.4);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    user-select: none;
+}
+
+.next-button:hover,
+.next-button:focus {
+    background-color: <?php echo $submitButtonHoverBgColor; ?>;
+    box-shadow: 0 6px 15px rgba(0, 86, 179, 0.6);
+    outline: none;
+}
+
+#successMessage {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: #28a745;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 6px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+    z-index: 1000;
+    font-weight: 600;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+}
+
+#successMessage.show {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+@media (max-width: 600px) {
+    .form-container {
+        padding: 15px;
+        margin: 20px 10px;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        font-size: 13px;
+    }
+
+    .next-button {
+        font-size: 15px;
+    }
+}
+
     </style>
 </head>
 <body>
@@ -211,17 +289,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             xhr.send();
         });
 
-        // Check if the URL contains the success flag
-        const urlParams = new URLSearchParams(window.location.search);
+                const successMessage = document.getElementById('successMessage');
         if (urlParams.has('success')) {
-            const successMessage = document.getElementById('successMessage');
-            successMessage.style.display = 'block';
-
-            // Hide the message after 3 seconds
+            successMessage.classList.add('show');
             setTimeout(() => {
-                successMessage.style.display = 'none';
+                successMessage.classList.remove('show');
             }, 3000);
         }
+
     </script>
 </body>
 </html>
